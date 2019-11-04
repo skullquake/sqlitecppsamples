@@ -15,31 +15,37 @@ int main(int argc,char** argv){
 			db.exec(R"(
 				CREATE TABLE A
 				(
-					val		TEXT
+					id	INTEGER PRIMARY KEY NOT NULL,
+					val	TEXT
 				))");
 			txn.commit();
 		}
 		{
 			SQLite::Transaction txn(db);
-			SQLite::Statement stmt(
-				db,
-				R"(
-					INSERT INTO A
-					(
-						val
-					)
-					VALUES
-					(
-						?
-					)
-				)"
-			);
-			stmt.bind(1,std::string("a")+std::to_string(0));
-			stmt.exec();
+			for(int i=0;i<8;i++){
+				SQLite::Statement stmt(
+					db,
+					R"(
+						INSERT INTO A
+						(
+							id,
+							val
+						)
+						VALUES
+						(
+							?,
+							?
+						)
+					)"
+				);
+				stmt.bind(1,i);//try stmt.bind(1,0); to see it fail
+				stmt.bind(2,std::string("a")+std::to_string(i));
+				stmt.exec();
+			}
 			txn.commit();
 		}
 		{
-			SQLite::Statement q0(
+			SQLite::Statement q(
 				db,
 				R"(
 					SELECT 
@@ -48,10 +54,10 @@ int main(int argc,char** argv){
 				)"
 				
 			);
-			while(q0.executeStep()){
+			while(q.executeStep()){
 				std::cout<<"(";
-				for(int colidx=0;colidx<q0.getColumnCount();colidx++){
-					 std::cout<<q0.getColumn(colidx)<<",";
+				for(int colidx=0;colidx<q.getColumnCount();colidx++){
+					 std::cout<<q.getColumn(colidx)<<",";
 				}
 				std::cout<<")"<<std::endl;
 			}
