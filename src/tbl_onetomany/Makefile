@@ -18,15 +18,15 @@ AR?=ar
 BUILDDIR=./bin/build
 BIN=./bin/a.$(BINEXT)
 SRCDIR=src
-SRC:=$(shell find $(SRCDIR) -name '*.cpp')
-OBJS:=$(addprefix $(BUILDDIR)/,$(SRC:%.cpp=%.o))
+SRC:=$(shell find $(SRCDIR) -name "*.cpp" -o -name "*.c")
+OBJS=$(addprefix $(BUILDDIR)/,$(patsubst %.c,%.o ,$(patsubst %.cpp,%.o,$(SRC))))
 CXXFLAGS+=\
+	-I./include\
+	-std=c++11
+CFLAGS+=\
 	-I./include
 LDFLAGS+=\
-	-L./lib\
-	-std=c++11\
-	-lSQLiteCpp\
-	-lsqlite3
+	-L./lib
 all:\
 	$(BIN)
 $(BIN):$(OBJS)
@@ -44,6 +44,15 @@ $(BUILDDIR)/%.o: %.cpp
 		-c $<\
 		$(LDFLAGS)\
 		-o $@
+$(BUILDDIR)/%.o: %.c
+	@printf "generating $@...\n"
+	@mkdir -p $(@D)
+	$(CC)\
+		$(CFLAGS)\
+		-c $<\
+		$(LDFLAGS)\
+		-o $@
+
 .phony:\
 	run\
 	clean\
