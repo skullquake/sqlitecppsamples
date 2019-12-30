@@ -59,7 +59,7 @@ $(BUILDDIR)/%.o: %.c
 	lsvar
 clean:
 	@rm -r ./bin
-run:
+run: $((BIN)
 	$(BIN)
 lsvar:
 	@echo $(BIN)

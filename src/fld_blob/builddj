@@ -1,0 +1,6 @@
+#!/bin/bash
+CXX=/home/skullquake/djgpp/720/bin/i586-pc-msdosdjgpp-g++ \
+CXXFLAGS="-I/home/skullquake/dosdrive/usr/include -L/home/skullquake/dosdrive/usr/lib"\
+	make\
+	&&\
+cp ./bin/a.exe /home/skullquake/dosdrive/tmp
