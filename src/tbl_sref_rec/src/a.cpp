@@ -22,10 +22,12 @@ void log(const std::string& msg){
 void opendb(){
 	db=new SQLite::Database("./db/a.db",SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
 }
+//------------------------------------------------------------------------------
 void closedb(){
 	if(db==NULL)
 		delete db;
 }
+//------------------------------------------------------------------------------
 void initdb(){
 	if(db!=NULL){
 		{
@@ -52,6 +54,7 @@ void initdb(){
 	}else{
 	}
 }
+//------------------------------------------------------------------------------
 void gendata_rec(int depth,int width,int maxlvl,int& id){
 	//log("gendata["+std::to_string(depth)+"]:start");
 	int parent=id-1;
@@ -92,6 +95,7 @@ void gendata_rec(int depth,int width,int maxlvl,int& id){
 	}
 	//log("gendata["+std::to_string(depth)+"]:end");
 }
+//------------------------------------------------------------------------------
 void selectdata_rec(int idx=0,int lvl=0){
 	if(db!=NULL){
 		SQLite::Statement* q=NULL;
@@ -149,8 +153,11 @@ int main(int argc,char** argv){
 		log("Creating tables:end");
 		log("Populating:start");
 		int id=1;
+		int curlvl=0;
+		int width=2;
+		int maxlvl=8;
 		SQLite::Transaction txn(*db);
-		gendata_rec(0,2,8,id);
+		gendata_rec(curlvl,width,maxlvl,id);
 		txn.commit();
 		log("Populating:end");
 		log("SelectingRec:start");
